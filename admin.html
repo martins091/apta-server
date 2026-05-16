@@ -139,6 +139,11 @@
             border: none;
             border-top: 1px solid #eee;
         }
+
+        .author-field {
+            display: flex;
+            gap: 12px;
+        }
     </style>
 </head>
 
@@ -169,6 +174,11 @@
                 <option value="HIPAA">HIPAA</option>
                 <option value="Compliance">Compliance</option>
             </select>
+
+            <div class="author-field">
+                <input type="text" id="authorName" placeholder="Author Name (e.g., Chuma Akana)" style="flex: 1;">
+                <input type="text" id="authorRole" placeholder="Author Role (e.g., Founder)" style="flex: 1;">
+            </div>
 
             <input type="file" id="imageInput" accept="image/*">
             <div id="imagePreview" class="image-preview"></div>
@@ -231,6 +241,7 @@
                     <div>
                         <strong>${escapeHtml(article.title)}</strong><br>
                         <small>${escapeHtml(article.category)} | ${article.date}</small>
+                        ${article.author ? `<br><small>✍️ ${escapeHtml(article.author.name)}${article.author.role ? ' · ' + escapeHtml(article.author.role) : ''}</small>` : ''}
                         ${article.featuredImage ? '<br><small>📷 Has image</small>' : ''}
                     </div>
                     <button class="delete-btn" onclick="deleteArticle('${article.slug}')">Delete</button>
@@ -249,6 +260,8 @@
             const excerpt = document.getElementById('excerpt').value;
             const content = document.getElementById('content').value;
             const imageFile = document.getElementById('imageInput').files[0];
+            const authorName = document.getElementById('authorName').value;
+            const authorRole = document.getElementById('authorRole').value;
 
             if (!title || !excerpt) {
                 showError('Please fill in title and excerpt');
@@ -261,6 +274,8 @@
             formData.append('category', category);
             formData.append('excerpt', excerpt);
             formData.append('content', content);
+            formData.append('authorName', authorName);
+            formData.append('authorRole', authorRole);
             if (imageFile) {
                 formData.append('image', imageFile);
             }
@@ -282,6 +297,8 @@
                 document.getElementById('title').value = '';
                 document.getElementById('excerpt').value = '';
                 document.getElementById('content').value = '';
+                document.getElementById('authorName').value = '';
+                document.getElementById('authorRole').value = '';
                 document.getElementById('imageInput').value = '';
                 document.getElementById('imagePreview').style.display = 'none';
                 document.getElementById('imagePreview').innerHTML = '';
@@ -334,6 +351,7 @@
         }
 
         function escapeHtml(text) {
+            if (!text) return '';
             const div = document.createElement('div');
             div.textContent = text;
             return div.innerHTML;

@@ -154,7 +154,7 @@ app.post('/api/articles', upload.single('image'), (req, res) => {
     return res.status(400).json({ error: 'An article with this title already exists' });
   }
   
-  const newArticle = {
+ const newArticle = {
     id: Date.now().toString(),
     slug,
     title,
@@ -164,8 +164,12 @@ app.post('/api/articles', upload.single('image'), (req, res) => {
     excerpt,
     content: finalContent,
     featuredImage: imageFile ? `/images/articles/${imageFile.filename}` : null,
+    author: {
+        name: req.body.authorName || 'APTA Foundry',
+        role: req.body.authorRole || ''
+    },
     status: 'published'
-  };
+};
   
   data.articles.push(newArticle);
   writeArticles(data);
