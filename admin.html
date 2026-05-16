@@ -31,11 +31,13 @@
 
         h1 {
             margin-bottom: 24px;
+            color: #1a1a1a;
         }
 
         h2 {
             margin-bottom: 16px;
             font-size: 20px;
+            color: #333;
         }
 
         input,
@@ -47,11 +49,21 @@
             border: 1px solid #ddd;
             border-radius: 8px;
             font-size: 14px;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        input:focus,
+        textarea:focus,
+        select:focus {
+            outline: none;
+            border-color: #E8B84B;
+            box-shadow: 0 0 0 3px rgba(232, 184, 75, 0.1);
         }
 
         textarea {
             min-height: 150px;
             font-family: monospace;
+            resize: vertical;
         }
 
         button {
@@ -62,10 +74,22 @@
             border-radius: 8px;
             font-weight: bold;
             cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
         }
 
-        button:hover {
+        button:hover:not(:disabled) {
             background: #F0C968;
+            transform: translateY(-1px);
+        }
+
+        button:active:not(:disabled) {
+            transform: translateY(0);
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
         }
 
         .article-list {
@@ -73,11 +97,16 @@
         }
 
         .article-list li {
-            padding: 12px;
+            padding: 16px;
             border-bottom: 1px solid #eee;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            transition: background 0.2s;
+        }
+
+        .article-list li:hover {
+            background: #fafafa;
         }
 
         .delete-btn {
@@ -88,24 +117,54 @@
             border-radius: 6px;
             border: none;
             cursor: pointer;
+            transition: background 0.2s;
         }
 
-        .success {
+        .delete-btn:hover {
+            background: #b91c1c;
+        }
+
+        .alert {
+            padding: 14px 16px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            display: none;
+            animation: slideIn 0.3s ease;
+        }
+
+        .alert-success {
             background: #22c55e;
             color: white;
-            padding: 12px;
-            border-radius: 8px;
-            margin-bottom: 16px;
-            display: none;
+            border-left: 4px solid #15803d;
         }
 
-        .error {
+        .alert-error {
             background: #dc2626;
             color: white;
-            padding: 12px;
-            border-radius: 8px;
-            margin-bottom: 16px;
-            display: none;
+            border-left: 4px solid #991b1b;
+        }
+
+        .alert-warning {
+            background: #f59e0b;
+            color: white;
+            border-left: 4px solid #b45309;
+        }
+
+        .alert-info {
+            background: #3b82f6;
+            color: white;
+            border-left: 4px solid #1e40af;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(-10px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
         }
 
         .key-input {
@@ -116,6 +175,7 @@
             display: block;
             margin-bottom: 8px;
             font-weight: bold;
+            color: #333;
         }
 
         .image-preview {
@@ -127,11 +187,30 @@
         .image-preview img {
             max-width: 100%;
             border-radius: 8px;
+            border: 1px solid #ddd;
         }
 
         .loading {
+            text-align: center;
+            padding: 20px;
             color: #666;
             font-style: italic;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #ddd;
+            border-top-color: #E8B84B;
+            border-radius: 50%;
+            animation: spin 0.6s linear infinite;
+            vertical-align: middle;
+            margin-right: 8px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
 
         hr {
@@ -144,6 +223,41 @@
             display: flex;
             gap: 12px;
         }
+
+        .required-field::after {
+            content: " *";
+            color: #dc2626;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 12px;
+            margin-top: 8px;
+        }
+
+        .button-secondary {
+            background: #6b7280;
+            color: white;
+        }
+
+        .button-secondary:hover:not(:disabled) {
+            background: #4b5563;
+        }
+
+        .image-size-warning {
+            font-size: 12px;
+            color: #6b7280;
+            margin-top: -12px;
+            margin-bottom: 16px;
+        }
+
+        .char-count {
+            font-size: 12px;
+            color: #6b7280;
+            text-align: right;
+            margin-top: -12px;
+            margin-bottom: 16px;
+        }
     </style>
 </head>
 
@@ -151,21 +265,26 @@
     <div class="container">
         <h1>📝 APTA Foundry — Blog Admin</h1>
 
-        <div id="successMsg" class="success"></div>
-        <div id="errorMsg" class="error"></div>
+        <!-- Alert containers -->
+        <div id="successMsg" class="alert alert-success"></div>
+        <div id="errorMsg" class="alert alert-error"></div>
+        <div id="warningMsg" class="alert alert-warning"></div>
+        <div id="infoMsg" class="alert alert-info"></div>
 
         <div class="card">
             <div class="key-input">
-                <label>🔑 Admin Key (required for all actions)</label>
+                <label>🔑 Admin Key <span class="required-field">(required for all actions)</span></label>
                 <input type="password" id="adminKey" placeholder="Enter your admin key" value="apta-secret-key-2025">
+                <div class="image-size-warning">⚠️ Keep this key secure. Don't share it.</div>
             </div>
         </div>
 
-        <!-- Create Article Section (with image upload built in) -->
+        <!-- Create Article Section -->
         <div class="card">
             <h2>➕ Create New Article</h2>
 
-            <input type="text" id="title" placeholder="Article Title">
+            <input type="text" id="title" placeholder="Article Title *" maxlength="200">
+            <div class="char-count" id="titleCount">0 / 200 characters</div>
 
             <select id="category">
                 <option value="AI Governance">AI Governance</option>
@@ -176,17 +295,20 @@
             </select>
 
             <div class="author-field">
-                <input type="text" id="authorName" placeholder="Author Name (e.g., Chuma Akana)" style="flex: 1;">
-                <input type="text" id="authorRole" placeholder="Author Role (e.g., Founder)" style="flex: 1;">
+                <input type="text" id="authorName" placeholder="Author Name (e.g., Chuma Akana)" maxlength="100">
+                <input type="text" id="authorRole" placeholder="Author Role (e.g., Founder)" maxlength="100">
             </div>
 
-            <input type="file" id="imageInput" accept="image/*">
+            <input type="file" id="imageInput" accept="image/jpeg,image/jpg,image/png,image/gif,image/webp">
+            <div class="image-size-warning">📸 Max file size: 20MB. Supported: JPG, PNG, GIF, WebP</div>
             <div id="imagePreview" class="image-preview"></div>
 
-            <textarea id="excerpt" placeholder="Short excerpt (summary)" rows="3"></textarea>
+            <textarea id="excerpt" placeholder="Short excerpt (summary) *" rows="3" maxlength="300"></textarea>
+            <div class="char-count" id="excerptCount">0 / 300 characters</div>
+
             <textarea id="content" placeholder="Full article content (Markdown supported)" rows="10"></textarea>
 
-            <button onclick="createArticle()">📤 Publish Article</button>
+            <button id="publishBtn" onclick="createArticle()">📤 Publish Article</button>
         </div>
 
         <hr>
@@ -194,7 +316,7 @@
         <!-- Articles List Section -->
         <div class="card">
             <h2>📄 Existing Articles</h2>
-            <div id="articlesLoading" class="loading">Loading...</div>
+            <div id="articlesLoading" class="loading">Loading articles...</div>
             <ul id="articlesList" class="article-list"></ul>
         </div>
     </div>
@@ -202,16 +324,54 @@
     <script>
         const API_URL = 'https://apta-server.onrender.com/api';
         const SERVER_URL = 'https://apta-server.onrender.com';
+        let isSubmitting = false;
 
-        // Preview image when selected
+        // Character counters
+        function updateCharCount(elementId, counterId, max) {
+            const element = document.getElementById(elementId);
+            const counter = document.getElementById(counterId);
+            if (element && counter) {
+                const length = element.value.length;
+                counter.textContent = `${length} / ${max} characters`;
+                if (length > max * 0.9) {
+                    counter.style.color = '#f59e0b';
+                } else {
+                    counter.style.color = '#6b7280';
+                }
+            }
+        }
+
+        document.getElementById('title').addEventListener('input', () => updateCharCount('title', 'titleCount', 200));
+        document.getElementById('excerpt').addEventListener('input', () => updateCharCount('excerpt', 'excerptCount', 300));
+
+        // Image preview with validation
         document.getElementById('imageInput').addEventListener('change', function (e) {
             const preview = document.getElementById('imagePreview');
             const file = e.target.files[0];
 
             if (file) {
+                // Validate file size (20MB)
+                if (file.size > 20 * 1024 * 1024) {
+                    showError(`Image too large! ${(file.size / 1024 / 1024).toFixed(2)}MB. Max 20MB.`);
+                    this.value = '';
+                    preview.style.display = 'none';
+                    preview.innerHTML = '';
+                    return;
+                }
+
+                // Validate file type
+                const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+                if (!allowedTypes.includes(file.type)) {
+                    showError(`Unsupported file type: ${file.type}. Use JPG, PNG, GIF, or WebP.`);
+                    this.value = '';
+                    preview.style.display = 'none';
+                    preview.innerHTML = '';
+                    return;
+                }
+
                 const reader = new FileReader();
                 reader.onload = function (event) {
-                    preview.innerHTML = `<img src="${event.target.result}" alt="Preview">`;
+                    preview.innerHTML = `<img src="${event.target.result}" alt="Preview"><p style="font-size:12px; margin-top:8px;">${file.name} (${(file.size / 1024 / 1024).toFixed(2)}MB)</p>`;
                     preview.style.display = 'block';
                 };
                 reader.readAsDataURL(file);
@@ -221,50 +381,138 @@
             }
         });
 
+        // Hide all alerts
+        function hideAlerts() {
+            document.getElementById('successMsg').style.display = 'none';
+            document.getElementById('errorMsg').style.display = 'none';
+            document.getElementById('warningMsg').style.display = 'none';
+            document.getElementById('infoMsg').style.display = 'none';
+        }
+
+        function showSuccess(msg) {
+            hideAlerts();
+            const el = document.getElementById('successMsg');
+            el.textContent = msg;
+            el.style.display = 'block';
+            setTimeout(() => { el.style.display = 'none'; }, 4000);
+        }
+
+        function showError(msg) {
+            hideAlerts();
+            const el = document.getElementById('errorMsg');
+            el.textContent = msg;
+            el.style.display = 'block';
+            setTimeout(() => { el.style.display = 'none'; }, 5000);
+        }
+
+        function showWarning(msg) {
+            hideAlerts();
+            const el = document.getElementById('warningMsg');
+            el.textContent = msg;
+            el.style.display = 'block';
+            setTimeout(() => { el.style.display = 'none'; }, 4000);
+        }
+
+        function showInfo(msg) {
+            hideAlerts();
+            const el = document.getElementById('infoMsg');
+            el.textContent = msg;
+            el.style.display = 'block';
+            setTimeout(() => { el.style.display = 'none'; }, 3000);
+        }
+
+        // Set loading state on button
+        function setButtonLoading(button, isLoading, text) {
+            if (isLoading) {
+                button.disabled = true;
+                button.innerHTML = '<span class="loading-spinner"></span> Publishing...';
+            } else {
+                button.disabled = false;
+                button.innerHTML = text;
+            }
+        }
+
         async function loadArticles() {
+            const loadingDiv = document.getElementById('articlesLoading');
+            const container = document.getElementById('articlesList');
+            
             try {
                 const response = await fetch(`${API_URL}/articles`);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
                 const articles = await response.json();
-                const container = document.getElementById('articlesList');
-                const loading = document.getElementById('articlesLoading');
-
+                
                 if (articles.length === 0) {
-                    loading.innerHTML = 'No articles yet. Create your first one above!';
-                    loading.style.display = 'block';
+                    loadingDiv.innerHTML = '📭 No articles yet. Create your first one above!';
+                    loadingDiv.style.display = 'block';
                     container.innerHTML = '';
                     return;
                 }
 
-                loading.style.display = 'none';
+                loadingDiv.style.display = 'none';
                 container.innerHTML = articles.map(article => `
                 <li>
                     <div>
                         <strong>${escapeHtml(article.title)}</strong><br>
-                        <small>${escapeHtml(article.category)} | ${article.date}</small>
-                        ${article.author ? `<br><small>✍️ ${escapeHtml(article.author.name)}${article.author.role ? ' · ' + escapeHtml(article.author.role) : ''}</small>` : ''}
-                        ${article.featuredImage ? '<br><small>📷 Has image</small>' : ''}
+                        <small>📂 ${escapeHtml(article.category)} | 📅 ${article.date}</small>
+                        ${article.author && article.author.name ? `<br><small>✍️ ${escapeHtml(article.author.name)}${article.author.role ? ' · ' + escapeHtml(article.author.role) : ''}</small>` : ''}
+                        ${article.featuredImage ? '<br><small>🖼️ Has image</small>' : ''}
                     </div>
-                    <button class="delete-btn" onclick="deleteArticle('${article.slug}')">Delete</button>
+                    <button class="delete-btn" onclick="deleteArticle('${article.slug}')">🗑️ Delete</button>
                 </li>
             `).join('');
             } catch (error) {
                 console.error('Error loading articles:', error);
-                document.getElementById('articlesLoading').innerHTML = 'Error loading articles. Make sure server is running.';
+                loadingDiv.innerHTML = '⚠️ Failed to load articles. Please refresh the page.';
+                loadingDiv.style.display = 'block';
+                showError('Unable to load articles: ' + error.message);
             }
         }
 
         async function createArticle() {
-            const key = document.getElementById('adminKey').value;
-            const title = document.getElementById('title').value;
-            const category = document.getElementById('category').value;
-            const excerpt = document.getElementById('excerpt').value;
-            const content = document.getElementById('content').value;
-            const imageFile = document.getElementById('imageInput').files[0];
-            const authorName = document.getElementById('authorName').value;
-            const authorRole = document.getElementById('authorRole').value;
+            if (isSubmitting) {
+                showWarning('Please wait, article is being published...');
+                return;
+            }
 
-            if (!title || !excerpt) {
-                showError('Please fill in title and excerpt');
+            const publishBtn = document.getElementById('publishBtn');
+            const key = document.getElementById('adminKey').value;
+            const title = document.getElementById('title').value.trim();
+            const category = document.getElementById('category').value;
+            const excerpt = document.getElementById('excerpt').value.trim();
+            const content = document.getElementById('content').value.trim();
+            const imageFile = document.getElementById('imageInput').files[0];
+            const authorName = document.getElementById('authorName').value.trim();
+            const authorRole = document.getElementById('authorRole').value.trim();
+
+            // Validation
+            if (!key) {
+                showError('Please enter your admin key');
+                return;
+            }
+
+            if (!title) {
+                showError('Please enter an article title');
+                document.getElementById('title').focus();
+                return;
+            }
+
+            if (!excerpt) {
+                showError('Please enter an excerpt/summary');
+                document.getElementById('excerpt').focus();
+                return;
+            }
+
+            if (title.length > 200) {
+                showError('Title must be less than 200 characters');
+                return;
+            }
+
+            if (excerpt.length > 300) {
+                showError('Excerpt must be less than 300 characters');
                 return;
             }
 
@@ -273,12 +521,15 @@
             formData.append('title', title);
             formData.append('category', category);
             formData.append('excerpt', excerpt);
-            formData.append('content', content);
-            formData.append('authorName', authorName);
-            formData.append('authorRole', authorRole);
+            formData.append('content', content || '');
+            formData.append('authorName', authorName || 'APTA Foundry');
+            formData.append('authorRole', authorRole || '');
             if (imageFile) {
                 formData.append('image', imageFile);
             }
+
+            isSubmitting = true;
+            setButtonLoading(publishBtn, true, '📤 Publish Article');
 
             try {
                 const response = await fetch(`${API_URL}/articles`, {
@@ -286,12 +537,13 @@
                     body: formData
                 });
 
+                const result = await response.json();
+
                 if (!response.ok) {
-                    const error = await response.json();
-                    throw new Error(error.error || 'Failed to create article');
+                    throw new Error(result.error || `HTTP ${response.status}: ${response.statusText}`);
                 }
 
-                showSuccess('Article published successfully!');
+                showSuccess('🎉 Article published successfully!');
 
                 // Clear form
                 document.getElementById('title').value = '';
@@ -302,19 +554,33 @@
                 document.getElementById('imageInput').value = '';
                 document.getElementById('imagePreview').style.display = 'none';
                 document.getElementById('imagePreview').innerHTML = '';
+                updateCharCount('title', 'titleCount', 200);
+                updateCharCount('excerpt', 'excerptCount', 300);
 
                 // Reload list
-                loadArticles();
+                await loadArticles();
+                
+                showInfo('✨ Your article is now live on the website!');
             } catch (error) {
                 console.error('Create error:', error);
-                showError(error.message);
+                showError(error.message || 'Failed to publish article. Please check your connection and try again.');
+            } finally {
+                isSubmitting = false;
+                setButtonLoading(publishBtn, false, '📤 Publish Article');
             }
         }
 
         async function deleteArticle(slug) {
-            if (!confirm('Delete this article?')) return;
-
             const key = document.getElementById('adminKey').value;
+            
+            if (!key) {
+                showError('Please enter your admin key');
+                return;
+            }
+
+            if (!confirm(`⚠️ Are you sure you want to delete "${slug}"?\n\nThis action cannot be undone!`)) {
+                return;
+            }
 
             try {
                 const response = await fetch(`${API_URL}/articles/${slug}`, {
@@ -328,26 +594,12 @@
                     throw new Error(error.error || 'Failed to delete');
                 }
 
-                showSuccess('Article deleted successfully!');
-                loadArticles();
+                showSuccess('🗑️ Article deleted successfully!');
+                await loadArticles();
             } catch (error) {
                 console.error('Delete error:', error);
-                showError(error.message);
+                showError(error.message || 'Failed to delete article');
             }
-        }
-
-        function showSuccess(msg) {
-            const el = document.getElementById('successMsg');
-            el.textContent = msg;
-            el.style.display = 'block';
-            setTimeout(() => el.style.display = 'none', 3000);
-        }
-
-        function showError(msg) {
-            const el = document.getElementById('errorMsg');
-            el.textContent = msg;
-            el.style.display = 'block';
-            setTimeout(() => el.style.display = 'none', 3000);
         }
 
         function escapeHtml(text) {
@@ -357,8 +609,24 @@
             return div.innerHTML;
         }
 
+        // Test connection on load
+        async function testConnection() {
+            try {
+                const response = await fetch(`${API_URL}/health`);
+                if (response.ok) {
+                    showInfo('✅ Connected to server successfully');
+                } else {
+                    showWarning('⚠️ Server connection unstable');
+                }
+            } catch (error) {
+                showError('❌ Cannot connect to server. Please check your internet connection.');
+                console.error('Connection test failed:', error);
+            }
+        }
+
         // Load articles on page load
         loadArticles();
+        testConnection();
     </script>
 </body>
 
