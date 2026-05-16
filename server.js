@@ -78,6 +78,10 @@ function generateSlug(title) {
 }
 
 // ============= API ROUTES =============
+// landing page
+app.get('/', (req, res) => {
+    res.send('<h1>Welcome to APTA Foundary Admin. Go to /admin to manage All articles</p>');
+    });
 
 // GET all articles
 app.get('/api/articles', (req, res) => {
