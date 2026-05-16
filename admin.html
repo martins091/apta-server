@@ -1,115 +1,232 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>APTA Foundry - Blog Admin</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: system-ui, -apple-system, sans-serif; background: #f5f5f5; padding: 40px; }
-        .container { max-width: 800px; margin: 0 auto; }
-        .card { background: white; border-radius: 12px; padding: 24px; margin-bottom: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-        h1 { margin-bottom: 24px; }
-        h2 { margin-bottom: 16px; font-size: 20px; }
-        input, textarea, select { width: 100%; padding: 12px; margin-bottom: 16px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; }
-        textarea { min-height: 150px; font-family: monospace; }
-        button { background: #E8B84B; color: #3D0F1D; padding: 12px 24px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
-        button:hover { background: #F0C968; }
-        .article-list { list-style: none; }
-        .article-list li { padding: 12px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
-        .delete-btn { background: #dc2626; color: white; padding: 6px 12px; font-size: 12px; border-radius: 6px; border: none; cursor: pointer; }
-        .success { background: #22c55e; color: white; padding: 12px; border-radius: 8px; margin-bottom: 16px; display: none; }
-        .error { background: #dc2626; color: white; padding: 12px; border-radius: 8px; margin-bottom: 16px; display: none; }
-        .key-input { margin-bottom: 24px; }
-        .key-input label { display: block; margin-bottom: 8px; font-weight: bold; }
-        .image-preview { margin-top: 12px; max-width: 200px; display: none; }
-        .image-preview img { max-width: 100%; border-radius: 8px; }
-        .loading { color: #666; font-style: italic; }
-        hr { margin: 20px 0; border: none; border-top: 1px solid #eee; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            background: #f5f5f5;
+            padding: 40px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            margin-bottom: 24px;
+        }
+
+        h2 {
+            margin-bottom: 16px;
+            font-size: 20px;
+        }
+
+        input,
+        textarea,
+        select {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 16px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        textarea {
+            min-height: 150px;
+            font-family: monospace;
+        }
+
+        button {
+            background: #E8B84B;
+            color: #3D0F1D;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #F0C968;
+        }
+
+        .article-list {
+            list-style: none;
+        }
+
+        .article-list li {
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .delete-btn {
+            background: #dc2626;
+            color: white;
+            padding: 6px 12px;
+            font-size: 12px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .success {
+            background: #22c55e;
+            color: white;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            display: none;
+        }
+
+        .error {
+            background: #dc2626;
+            color: white;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            display: none;
+        }
+
+        .key-input {
+            margin-bottom: 24px;
+        }
+
+        .key-input label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        .image-preview {
+            margin-top: 12px;
+            max-width: 200px;
+            display: none;
+        }
+
+        .image-preview img {
+            max-width: 100%;
+            border-radius: 8px;
+        }
+
+        .loading {
+            color: #666;
+            font-style: italic;
+        }
+
+        hr {
+            margin: 20px 0;
+            border: none;
+            border-top: 1px solid #eee;
+        }
     </style>
 </head>
+
 <body>
-<div class="container">
-    <h1>📝 APTA Foundry — Blog Admin</h1>
-    
-    <div id="successMsg" class="success"></div>
-    <div id="errorMsg" class="error"></div>
-    
-    <div class="card">
-        <div class="key-input">
-            <label>🔑 Admin Key (required for all actions)</label>
-            <input type="password" id="adminKey" placeholder="Enter your admin key" value="apta-secret-key-2025">
+    <div class="container">
+        <h1>📝 APTA Foundry — Blog Admin</h1>
+
+        <div id="successMsg" class="success"></div>
+        <div id="errorMsg" class="error"></div>
+
+        <div class="card">
+            <div class="key-input">
+                <label>🔑 Admin Key (required for all actions)</label>
+                <input type="password" id="adminKey" placeholder="Enter your admin key" value="apta-secret-key-2025">
+            </div>
+        </div>
+
+        <!-- Create Article Section (with image upload built in) -->
+        <div class="card">
+            <h2>➕ Create New Article</h2>
+
+            <input type="text" id="title" placeholder="Article Title">
+
+            <select id="category">
+                <option value="AI Governance">AI Governance</option>
+                <option value="US Privacy Law">US Privacy Law</option>
+                <option value="GDPR">GDPR</option>
+                <option value="HIPAA">HIPAA</option>
+                <option value="Compliance">Compliance</option>
+            </select>
+
+            <input type="file" id="imageInput" accept="image/*">
+            <div id="imagePreview" class="image-preview"></div>
+
+            <textarea id="excerpt" placeholder="Short excerpt (summary)" rows="3"></textarea>
+            <textarea id="content" placeholder="Full article content (Markdown supported)" rows="10"></textarea>
+
+            <button onclick="createArticle()">📤 Publish Article</button>
+        </div>
+
+        <hr>
+
+        <!-- Articles List Section -->
+        <div class="card">
+            <h2>📄 Existing Articles</h2>
+            <div id="articlesLoading" class="loading">Loading...</div>
+            <ul id="articlesList" class="article-list"></ul>
         </div>
     </div>
-    
-    <!-- Create Article Section (with image upload built in) -->
-    <div class="card">
-        <h2>➕ Create New Article</h2>
-        
-        <input type="text" id="title" placeholder="Article Title">
-        
-        <select id="category">
-            <option value="AI Governance">AI Governance</option>
-            <option value="US Privacy Law">US Privacy Law</option>
-            <option value="GDPR">GDPR</option>
-            <option value="HIPAA">HIPAA</option>
-            <option value="Compliance">Compliance</option>
-        </select>
-        
-        <input type="file" id="imageInput" accept="image/*">
-        <div id="imagePreview" class="image-preview"></div>
-        
-        <textarea id="excerpt" placeholder="Short excerpt (summary)" rows="3"></textarea>
-        <textarea id="content" placeholder="Full article content (Markdown supported)" rows="10"></textarea>
-        
-        <button onclick="createArticle()">📤 Publish Article</button>
-    </div>
-    
-    <hr>
-    
-    <!-- Articles List Section -->
-    <div class="card">
-        <h2>📄 Existing Articles</h2>
-        <div id="articlesLoading" class="loading">Loading...</div>
-        <ul id="articlesList" class="article-list"></ul>
-    </div>
-</div>
 
-<script>
-    const API_URL = 'http://localhost:3001/api';
-    
-    // Preview image when selected
-    document.getElementById('imageInput').addEventListener('change', function(e) {
-        const preview = document.getElementById('imagePreview');
-        const file = e.target.files[0];
-        
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = function(event) {
-                preview.innerHTML = `<img src="${event.target.result}" alt="Preview">`;
-                preview.style.display = 'block';
-            };
-            reader.readAsDataURL(file);
-        } else {
-            preview.style.display = 'none';
-            preview.innerHTML = '';
-        }
-    });
-    
-    async function loadArticles() {
-        try {
-            const response = await fetch(`${API_URL}/articles`);
-            const articles = await response.json();
-            const container = document.getElementById('articlesList');
-            const loading = document.getElementById('articlesLoading');
-            
-            if (articles.length === 0) {
-                loading.innerHTML = 'No articles yet. Create your first one above!';
-                loading.style.display = 'block';
-                container.innerHTML = '';
-                return;
+    <script>
+        const API_URL = 'https://apta-server.onrender.com/api';
+        const SERVER_URL = 'https://apta-server.onrender.com';
+
+        // Preview image when selected
+        document.getElementById('imageInput').addEventListener('change', function (e) {
+            const preview = document.getElementById('imagePreview');
+            const file = e.target.files[0];
+
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (event) {
+                    preview.innerHTML = `<img src="${event.target.result}" alt="Preview">`;
+                    preview.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            } else {
+                preview.style.display = 'none';
+                preview.innerHTML = '';
             }
-            
-            loading.style.display = 'none';
-            container.innerHTML = articles.map(article => `
+        });
+
+        async function loadArticles() {
+            try {
+                const response = await fetch(`${API_URL}/articles`);
+                const articles = await response.json();
+                const container = document.getElementById('articlesList');
+                const loading = document.getElementById('articlesLoading');
+
+                if (articles.length === 0) {
+                    loading.innerHTML = 'No articles yet. Create your first one above!';
+                    loading.style.display = 'block';
+                    container.innerHTML = '';
+                    return;
+                }
+
+                loading.style.display = 'none';
+                container.innerHTML = articles.map(article => `
                 <li>
                     <div>
                         <strong>${escapeHtml(article.title)}</strong><br>
@@ -119,111 +236,112 @@
                     <button class="delete-btn" onclick="deleteArticle('${article.slug}')">Delete</button>
                 </li>
             `).join('');
-        } catch (error) {
-            console.error('Error loading articles:', error);
-            document.getElementById('articlesLoading').innerHTML = 'Error loading articles. Make sure server is running.';
-        }
-    }
-    
-    async function createArticle() {
-        const key = document.getElementById('adminKey').value;
-        const title = document.getElementById('title').value;
-        const category = document.getElementById('category').value;
-        const excerpt = document.getElementById('excerpt').value;
-        const content = document.getElementById('content').value;
-        const imageFile = document.getElementById('imageInput').files[0];
-        
-        if (!title || !excerpt) {
-            showError('Please fill in title and excerpt');
-            return;
-        }
-        
-        const formData = new FormData();
-        formData.append('key', key);
-        formData.append('title', title);
-        formData.append('category', category);
-        formData.append('excerpt', excerpt);
-        formData.append('content', content);
-        if (imageFile) {
-            formData.append('image', imageFile);
-        }
-        
-        try {
-            const response = await fetch(`${API_URL}/articles`, {
-                method: 'POST',
-                body: formData
-            });
-            
-            if (!response.ok) {
-                const error = await response.json();
-                throw new Error(error.error || 'Failed to create article');
+            } catch (error) {
+                console.error('Error loading articles:', error);
+                document.getElementById('articlesLoading').innerHTML = 'Error loading articles. Make sure server is running.';
             }
-            
-            showSuccess('Article published successfully!');
-            
-            // Clear form
-            document.getElementById('title').value = '';
-            document.getElementById('excerpt').value = '';
-            document.getElementById('content').value = '';
-            document.getElementById('imageInput').value = '';
-            document.getElementById('imagePreview').style.display = 'none';
-            document.getElementById('imagePreview').innerHTML = '';
-            
-            // Reload list
-            loadArticles();
-        } catch (error) {
-            console.error('Create error:', error);
-            showError(error.message);
         }
-    }
-    
-    async function deleteArticle(slug) {
-        if (!confirm('Delete this article?')) return;
-        
-        const key = document.getElementById('adminKey').value;
-        
-        try {
-            const response = await fetch(`${API_URL}/articles/${slug}`, {
-                method: 'DELETE',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ key })
-            });
-            
-            if (!response.ok) {
-                const error = await response.json();
-                throw new Error(error.error || 'Failed to delete');
+
+        async function createArticle() {
+            const key = document.getElementById('adminKey').value;
+            const title = document.getElementById('title').value;
+            const category = document.getElementById('category').value;
+            const excerpt = document.getElementById('excerpt').value;
+            const content = document.getElementById('content').value;
+            const imageFile = document.getElementById('imageInput').files[0];
+
+            if (!title || !excerpt) {
+                showError('Please fill in title and excerpt');
+                return;
             }
-            
-            showSuccess('Article deleted successfully!');
-            loadArticles();
-        } catch (error) {
-            console.error('Delete error:', error);
-            showError(error.message);
+
+            const formData = new FormData();
+            formData.append('key', key);
+            formData.append('title', title);
+            formData.append('category', category);
+            formData.append('excerpt', excerpt);
+            formData.append('content', content);
+            if (imageFile) {
+                formData.append('image', imageFile);
+            }
+
+            try {
+                const response = await fetch(`${API_URL}/articles`, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.error || 'Failed to create article');
+                }
+
+                showSuccess('Article published successfully!');
+
+                // Clear form
+                document.getElementById('title').value = '';
+                document.getElementById('excerpt').value = '';
+                document.getElementById('content').value = '';
+                document.getElementById('imageInput').value = '';
+                document.getElementById('imagePreview').style.display = 'none';
+                document.getElementById('imagePreview').innerHTML = '';
+
+                // Reload list
+                loadArticles();
+            } catch (error) {
+                console.error('Create error:', error);
+                showError(error.message);
+            }
         }
-    }
-    
-    function showSuccess(msg) {
-        const el = document.getElementById('successMsg');
-        el.textContent = msg;
-        el.style.display = 'block';
-        setTimeout(() => el.style.display = 'none', 3000);
-    }
-    
-    function showError(msg) {
-        const el = document.getElementById('errorMsg');
-        el.textContent = msg;
-        el.style.display = 'block';
-        setTimeout(() => el.style.display = 'none', 3000);
-    }
-    
-    function escapeHtml(text) {
-        const div = document.createElement('div');
-        div.textContent = text;
-        return div.innerHTML;
-    }
-    
-    // Load articles on page load
-    loadArticles();
-</script>
+
+        async function deleteArticle(slug) {
+            if (!confirm('Delete this article?')) return;
+
+            const key = document.getElementById('adminKey').value;
+
+            try {
+                const response = await fetch(`${API_URL}/articles/${slug}`, {
+                    method: 'DELETE',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ key })
+                });
+
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.error || 'Failed to delete');
+                }
+
+                showSuccess('Article deleted successfully!');
+                loadArticles();
+            } catch (error) {
+                console.error('Delete error:', error);
+                showError(error.message);
+            }
+        }
+
+        function showSuccess(msg) {
+            const el = document.getElementById('successMsg');
+            el.textContent = msg;
+            el.style.display = 'block';
+            setTimeout(() => el.style.display = 'none', 3000);
+        }
+
+        function showError(msg) {
+            const el = document.getElementById('errorMsg');
+            el.textContent = msg;
+            el.style.display = 'block';
+            setTimeout(() => el.style.display = 'none', 3000);
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Load articles on page load
+        loadArticles();
+    </script>
 </body>
+
 </html>
