@@ -1,8 +1,10 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
-    <title>APTA Foundry - Blog Admin</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>APTA Foundry - Blog Admin with Author Profile</title>
     <style>
         * {
             margin: 0;
@@ -11,45 +13,53 @@
         }
 
         body {
-            font-family: system-ui, -apple-system, sans-serif;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
             background: #f5f5f5;
-            padding: 40px;
+            padding: 40px 20px;
         }
 
         .container {
-            max-width: 800px;
+            max-width: 900px;
             margin: 0 auto;
         }
 
         .card {
             background: white;
-            border-radius: 12px;
-            padding: 24px;
-            margin-bottom: 24px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            border-radius: 20px;
+            padding: 28px;
+            margin-bottom: 28px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.03);
+            transition: box-shadow 0.2s;
         }
 
         h1 {
-            margin-bottom: 24px;
+            margin-bottom: 20px;
             color: #1a1a1a;
+            font-size: 1.8rem;
+            font-weight: 600;
+            letter-spacing: -0.3px;
         }
 
         h2 {
-            margin-bottom: 16px;
-            font-size: 20px;
-            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.4rem;
+            color: #1f2937;
+            border-left: 4px solid #E8B84B;
+            padding-left: 14px;
         }
 
         input,
         textarea,
         select {
             width: 100%;
-            padding: 12px;
+            padding: 12px 14px;
             margin-bottom: 16px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            border-radius: 14px;
             font-size: 14px;
-            transition: border-color 0.2s, box-shadow 0.2s;
+            background: #fff;
+            transition: all 0.2s ease;
+            font-family: inherit;
         }
 
         input:focus,
@@ -57,34 +67,36 @@
         select:focus {
             outline: none;
             border-color: #E8B84B;
-            box-shadow: 0 0 0 3px rgba(232, 184, 75, 0.1);
+            box-shadow: 0 0 0 3px rgba(232, 184, 75, 0.2);
         }
 
         textarea {
-            min-height: 150px;
-            font-family: monospace;
+            min-height: 140px;
+            font-family: 'SF Mono', 'Menlo', monospace;
             resize: vertical;
         }
 
         button {
             background: #E8B84B;
             color: #3D0F1D;
-            padding: 12px 24px;
+            padding: 12px 28px;
             border: none;
-            border-radius: 8px;
-            font-weight: bold;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 0.95rem;
             cursor: pointer;
             transition: all 0.2s;
-            position: relative;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
         }
 
         button:hover:not(:disabled) {
             background: #F0C968;
             transform: translateY(-1px);
+            box-shadow: 0 6px 14px rgba(232, 184, 75, 0.25);
         }
 
         button:active:not(:disabled) {
-            transform: translateY(0);
+            transform: translateY(1px);
         }
 
         button:disabled {
@@ -97,111 +109,181 @@
         }
 
         .article-list li {
-            padding: 16px;
-            border-bottom: 1px solid #eee;
+            padding: 18px 14px;
+            border-bottom: 1px solid #edf2f7;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            transition: background 0.2s;
+            transition: background 0.15s;
         }
 
         .article-list li:hover {
-            background: #fafafa;
+            background: #fefce8;
         }
 
         .delete-btn {
             background: #dc2626;
             color: white;
-            padding: 6px 12px;
+            padding: 6px 14px;
             font-size: 12px;
-            border-radius: 6px;
+            font-weight: 600;
+            border-radius: 30px;
             border: none;
             cursor: pointer;
-            transition: background 0.2s;
+            transition: 0.2s;
         }
 
         .delete-btn:hover {
             background: #b91c1c;
+            transform: scale(0.97);
         }
 
+        /* alert styles */
         .alert {
-            padding: 14px 16px;
-            border-radius: 8px;
-            margin-bottom: 16px;
+            padding: 14px 18px;
+            border-radius: 16px;
+            margin-bottom: 20px;
             display: none;
-            animation: slideIn 0.3s ease;
+            animation: fadeSlide 0.25s ease-out;
+            font-weight: 500;
         }
 
         .alert-success {
-            background: #22c55e;
-            color: white;
-            border-left: 4px solid #15803d;
+            background: #e8f5e9;
+            color: #1e4620;
+            border-left: 5px solid #2e7d32;
         }
 
         .alert-error {
-            background: #dc2626;
-            color: white;
-            border-left: 4px solid #991b1b;
+            background: #ffebee;
+            color: #b71c1c;
+            border-left: 5px solid #d32f2f;
         }
 
         .alert-warning {
-            background: #f59e0b;
-            color: white;
-            border-left: 4px solid #b45309;
+            background: #fff8e1;
+            color: #b76e00;
+            border-left: 5px solid #ffa000;
         }
 
         .alert-info {
-            background: #3b82f6;
-            color: white;
-            border-left: 4px solid #1e40af;
+            background: #e3f2fd;
+            color: #0d3c6b;
+            border-left: 5px solid #1976d2;
         }
 
-        @keyframes slideIn {
+        @keyframes fadeSlide {
             from {
-                transform: translateY(-10px);
                 opacity: 0;
+                transform: translateY(-8px);
             }
             to {
-                transform: translateY(0);
                 opacity: 1;
+                transform: translateY(0);
             }
         }
 
         .key-input {
-            margin-bottom: 24px;
+            margin-bottom: 8px;
         }
 
         .key-input label {
             display: block;
             margin-bottom: 8px;
-            font-weight: bold;
-            color: #333;
+            font-weight: 700;
+            color: #1f2937;
         }
 
         .image-preview {
             margin-top: 12px;
-            max-width: 200px;
+            max-width: 220px;
             display: none;
+            background: #faf9f8;
+            padding: 8px;
+            border-radius: 20px;
+            border: 1px solid #f0e9e0;
         }
 
         .image-preview img {
             max-width: 100%;
-            border-radius: 8px;
-            border: 1px solid #ddd;
+            border-radius: 14px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .author-section {
+            background: #fefcf7;
+            padding: 18px 16px;
+            border-radius: 24px;
+            margin: 12px 0 16px 0;
+            border: 1px dashed #e7dbbd;
+        }
+
+        .author-title {
+            font-weight: 600;
+            color: #b45309;
+            margin-bottom: 12px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .flex-row {
+            display: flex;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+
+        .flex-row input {
+            flex: 1;
+        }
+
+        .profile-preview {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-top: 12px;
+            background: #fff;
+            padding: 10px;
+            border-radius: 40px;
+        }
+
+        .profile-preview-img {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            object-fit: cover;
+            background: #f0efea;
+            border: 2px solid #E8B84B;
+        }
+
+        .image-size-warning {
+            font-size: 12px;
+            color: #6c757d;
+            margin-top: -12px;
+            margin-bottom: 16px;
+        }
+
+        .char-count {
+            font-size: 11px;
+            color: #6b7280;
+            text-align: right;
+            margin-top: -12px;
+            margin-bottom: 14px;
         }
 
         .loading {
             text-align: center;
-            padding: 20px;
-            color: #666;
+            padding: 24px;
+            color: #5b6e8c;
             font-style: italic;
         }
 
         .loading-spinner {
             display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 2px solid #ddd;
+            width: 18px;
+            height: 18px;
+            border: 2px solid #e0e0e0;
             border-top-color: #E8B84B;
             border-radius: 50%;
             animation: spin 0.6s linear infinite;
@@ -210,60 +292,37 @@
         }
 
         @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        hr {
-            margin: 20px 0;
-            border: none;
-            border-top: 1px solid #eee;
-        }
-
-        .author-field {
-            display: flex;
-            gap: 12px;
-        }
-
-        .required-field::after {
-            content: " *";
-            color: #dc2626;
+            to {
+                transform: rotate(360deg);
+            }
         }
 
         .button-group {
             display: flex;
-            gap: 12px;
-            margin-top: 8px;
+            gap: 14px;
+            margin-top: 12px;
+            flex-wrap: wrap;
         }
 
-        .button-secondary {
-            background: #6b7280;
-            color: white;
+        hr {
+            margin: 24px 0;
+            border: none;
+            border-top: 2px dotted #e9e5de;
         }
 
-        .button-secondary:hover:not(:disabled) {
-            background: #4b5563;
-        }
-
-        .image-size-warning {
-            font-size: 12px;
-            color: #6b7280;
-            margin-top: -12px;
-            margin-bottom: 16px;
-        }
-
-        .char-count {
-            font-size: 12px;
-            color: #6b7280;
-            text-align: right;
-            margin-top: -12px;
-            margin-bottom: 16px;
+        .badge-image {
+            background: #eef2ff;
+            border-radius: 20px;
+            padding: 2px 12px;
+            font-size: 11px;
+            display: inline-block;
         }
     </style>
 </head>
 
 <body>
     <div class="container">
-        <h1>📝 APTA Foundry — Blog Admin</h1>
+        <h1>📚 APTA Foundry — Blog Studio <span style="font-size: 1rem; font-weight: normal;">+ Author Portraits</span></h1>
 
         <!-- Alert containers -->
         <div id="successMsg" class="alert alert-success"></div>
@@ -271,52 +330,72 @@
         <div id="warningMsg" class="alert alert-warning"></div>
         <div id="infoMsg" class="alert alert-info"></div>
 
+        <!-- Admin key card -->
         <div class="card">
             <div class="key-input">
-                <label>🔑 Admin Key <span class="required-field">(required for all actions)</span></label>
-                <input type="password" id="adminKey" placeholder="Enter your admin key" value="apta-secret-key-2025">
-                <div class="image-size-warning">⚠️ Keep this key secure. Don't share it.</div>
+                <label>🔐 Admin Master Key <span style="color:#dc2626;">*</span></label>
+                <input type="password" id="adminKey" placeholder="Your secret admin key" value="apta-secret-key-2025">
+                <div class="image-size-warning">⚠️ Keep this key secure – required for publish & delete.</div>
             </div>
         </div>
 
-        <!-- Create Article Section -->
+        <!-- CREATE ARTICLE CARD (with Author Profile Upload) -->
         <div class="card">
-            <h2>➕ Create New Article</h2>
+            <h2>✨ + Create New Article + Author Profile</h2>
 
-            <input type="text" id="title" placeholder="Article Title *" maxlength="200">
-            <div class="char-count" id="titleCount">0 / 200 characters</div>
+            <input type="text" id="title" placeholder="📌 Article title *" maxlength="200">
+            <div class="char-count" id="titleCount">0 / 200</div>
 
             <select id="category">
-                <option value="AI Governance">AI Governance</option>
-                <option value="US Privacy Law">US Privacy Law</option>
-                <option value="GDPR">GDPR</option>
-                <option value="HIPAA">HIPAA</option>
-                <option value="Compliance">Compliance</option>
+                <option value="AI Governance">🤖 AI Governance</option>
+                <option value="US Privacy Law">🇺🇸 US Privacy Law</option>
+                <option value="GDPR">🇪🇺 GDPR</option>
+                <option value="HIPAA">🏥 HIPAA</option>
+                <option value="Compliance">⚖️ Compliance</option>
             </select>
 
-            <div class="author-field">
-                <input type="text" id="authorName" placeholder="Author Name (e.g., Chuma Akana)" maxlength="100">
-                <input type="text" id="authorRole" placeholder="Author Role (e.g., Founder)" maxlength="100">
+            <!-- Author details + profile picture section -->
+            <div class="author-section">
+                <div class="author-title">
+                    <span>🖋️ AUTHOR INFO (visible on article)</span>
+                </div>
+                <div class="flex-row">
+                    <input type="text" id="authorName" placeholder="Full name (e.g., Chuma Akana)" maxlength="100">
+                    <input type="text" id="authorRole" placeholder="Role / Title (e.g., Founder, CTO)" maxlength="100">
+                </div>
+
+                <!-- Author profile picture upload -->
+                <div style="margin-top: 8px;">
+                    <label style="font-weight: 500; font-size: 13px; display: block; margin-bottom: 8px;">📸 Author Profile Picture (will be stored like article images)</label>
+                    <input type="file" id="authorProfileInput" accept="image/jpeg,image/jpg,image/png,image/gif,image/webp">
+                    <div class="image-size-warning">📸 Max 20MB | Supported: JPG, PNG, GIF, WebP — saved to server same way as article image</div>
+                    <div id="authorProfilePreview" class="profile-preview" style="display: none;">
+                        <img id="authorPreviewImg" class="profile-preview-img" alt="profile preview">
+                        <span id="authorPreviewName" style="font-size: 13px; color: #3D0F1D;"></span>
+                    </div>
+                </div>
             </div>
 
+            <!-- Featured article image -->
+            <label style="font-weight: 500; font-size: 14px; margin-bottom: 5px; display: block;">🖼️ Article Featured Image</label>
             <input type="file" id="imageInput" accept="image/jpeg,image/jpg,image/png,image/gif,image/webp">
-            <div class="image-size-warning">📸 Max file size: 20MB. Supported: JPG, PNG, GIF, WebP</div>
+            <div class="image-size-warning">📸 Max file size: 20MB. Recommended 16:9 ratio</div>
             <div id="imagePreview" class="image-preview"></div>
 
-            <textarea id="excerpt" placeholder="Short excerpt (summary) *" rows="3" maxlength="300"></textarea>
-            <div class="char-count" id="excerptCount">0 / 300 characters</div>
+            <textarea id="excerpt" placeholder="✍️ Short excerpt / summary (max 300 chars) *" rows="3" maxlength="300"></textarea>
+            <div class="char-count" id="excerptCount">0 / 300</div>
 
-            <textarea id="content" placeholder="Full article content (Markdown supported)" rows="10"></textarea>
+            <textarea id="content" placeholder="📄 Full article content (Markdown supported) — full story here" rows="10"></textarea>
 
-            <button id="publishBtn" onclick="createArticle()">📤 Publish Article</button>
+            <button id="publishBtn" onclick="createArticle()">🚀 Publish Article with Author Profile</button>
         </div>
 
         <hr>
 
-        <!-- Articles List Section -->
+        <!-- Articles list with enhanced author display -->
         <div class="card">
-            <h2>📄 Existing Articles</h2>
-            <div id="articlesLoading" class="loading">Loading articles...</div>
+            <h2>📖 Published Articles</h2>
+            <div id="articlesLoading" class="loading">📡 Loading articles...</div>
             <ul id="articlesList" class="article-list"></ul>
         </div>
     </div>
@@ -332,154 +411,136 @@
             const counter = document.getElementById(counterId);
             if (element && counter) {
                 const length = element.value.length;
-                counter.textContent = `${length} / ${max} characters`;
-                if (length > max * 0.9) {
-                    counter.style.color = '#f59e0b';
-                } else {
-                    counter.style.color = '#6b7280';
-                }
+                counter.textContent = `${length} / ${max}`;
+                counter.style.color = length > max * 0.9 ? '#e67e22' : '#6c757d';
             }
         }
 
-        document.getElementById('title').addEventListener('input', () => updateCharCount('title', 'titleCount', 200));
-        document.getElementById('excerpt').addEventListener('input', () => updateCharCount('excerpt', 'excerptCount', 300));
+        document.getElementById('title')?.addEventListener('input', () => updateCharCount('title', 'titleCount', 200));
+        document.getElementById('excerpt')?.addEventListener('input', () => updateCharCount('excerpt', 'excerptCount', 300));
 
-        // Image preview with validation
-        document.getElementById('imageInput').addEventListener('change', function (e) {
-            const preview = document.getElementById('imagePreview');
-            const file = e.target.files[0];
-
-            if (file) {
-                // Validate file size (20MB)
-                if (file.size > 20 * 1024 * 1024) {
-                    showError(`Image too large! ${(file.size / 1024 / 1024).toFixed(2)}MB. Max 20MB.`);
-                    this.value = '';
-                    preview.style.display = 'none';
-                    preview.innerHTML = '';
-                    return;
-                }
-
-                // Validate file type
-                const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
-                if (!allowedTypes.includes(file.type)) {
-                    showError(`Unsupported file type: ${file.type}. Use JPG, PNG, GIF, or WebP.`);
-                    this.value = '';
-                    preview.style.display = 'none';
-                    preview.innerHTML = '';
-                    return;
-                }
-
-                const reader = new FileReader();
-                reader.onload = function (event) {
-                    preview.innerHTML = `<img src="${event.target.result}" alt="Preview"><p style="font-size:12px; margin-top:8px;">${file.name} (${(file.size / 1024 / 1024).toFixed(2)}MB)</p>`;
-                    preview.style.display = 'block';
-                };
-                reader.readAsDataURL(file);
-            } else {
-                preview.style.display = 'none';
-                preview.innerHTML = '';
-            }
-        });
-
-        // Hide all alerts
+        // Helper: hide all alerts
         function hideAlerts() {
-            document.getElementById('successMsg').style.display = 'none';
-            document.getElementById('errorMsg').style.display = 'none';
-            document.getElementById('warningMsg').style.display = 'none';
-            document.getElementById('infoMsg').style.display = 'none';
+            ['successMsg', 'errorMsg', 'warningMsg', 'infoMsg'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.style.display = 'none';
+            });
         }
 
-        function showSuccess(msg) {
-            hideAlerts();
-            const el = document.getElementById('successMsg');
-            el.textContent = msg;
-            el.style.display = 'block';
-            setTimeout(() => { el.style.display = 'none'; }, 4000);
-        }
+        function showSuccess(msg) { hideAlerts(); const el = document.getElementById('successMsg'); el.textContent = msg; el.style.display = 'block'; setTimeout(() => el.style.display = 'none', 4500); }
+        function showError(msg) { hideAlerts(); const el = document.getElementById('errorMsg'); el.textContent = msg; el.style.display = 'block'; setTimeout(() => el.style.display = 'none', 6000); }
+        function showWarning(msg) { hideAlerts(); const el = document.getElementById('warningMsg'); el.textContent = msg; el.style.display = 'block'; setTimeout(() => el.style.display = 'none', 4000); }
+        function showInfo(msg) { hideAlerts(); const el = document.getElementById('infoMsg'); el.textContent = msg; el.style.display = 'block'; setTimeout(() => el.style.display = 'none', 3500); }
 
-        function showError(msg) {
-            hideAlerts();
-            const el = document.getElementById('errorMsg');
-            el.textContent = msg;
-            el.style.display = 'block';
-            setTimeout(() => { el.style.display = 'none'; }, 5000);
-        }
-
-        function showWarning(msg) {
-            hideAlerts();
-            const el = document.getElementById('warningMsg');
-            el.textContent = msg;
-            el.style.display = 'block';
-            setTimeout(() => { el.style.display = 'none'; }, 4000);
-        }
-
-        function showInfo(msg) {
-            hideAlerts();
-            const el = document.getElementById('infoMsg');
-            el.textContent = msg;
-            el.style.display = 'block';
-            setTimeout(() => { el.style.display = 'none'; }, 3000);
-        }
-
-        // Set loading state on button
-        function setButtonLoading(button, isLoading, text) {
+        function setButtonLoading(button, isLoading, originalText) {
+            if (!button) return;
             if (isLoading) {
                 button.disabled = true;
                 button.innerHTML = '<span class="loading-spinner"></span> Publishing...';
             } else {
                 button.disabled = false;
-                button.innerHTML = text;
+                button.innerHTML = originalText || '📤 Publish Article';
             }
         }
+
+        // Image preview for article image
+        document.getElementById('imageInput')?.addEventListener('change', function (e) {
+            const preview = document.getElementById('imagePreview');
+            const file = e.target.files[0];
+            if (file) {
+                if (file.size > 20 * 1024 * 1024) { showError(`Image too large (${(file.size / 1024 / 1024).toFixed(2)}MB). Max 20MB.`); this.value = ''; preview.style.display = 'none'; preview.innerHTML = ''; return; }
+                const allowed = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+                if (!allowed.includes(file.type)) { showError(`Unsupported type. Use JPG, PNG, GIF, WebP.`); this.value = ''; preview.style.display = 'none'; preview.innerHTML = ''; return; }
+                const reader = new FileReader();
+                reader.onload = ev => { preview.innerHTML = `<img src="${ev.target.result}" alt="preview"><p style="font-size:11px; margin-top:6px;">${file.name.substring(0, 30)} (${(file.size / 1024).toFixed(0)}KB)</p>`; preview.style.display = 'block'; };
+                reader.readAsDataURL(file);
+            } else { preview.style.display = 'none'; preview.innerHTML = ''; }
+        });
+
+        // AUTHOR PROFILE IMAGE PREVIEW (similar to article image)
+        const authorProfileInput = document.getElementById('authorProfileInput');
+        const authorPreviewDiv = document.getElementById('authorProfilePreview');
+        const authorPreviewImg = document.getElementById('authorPreviewImg');
+        const authorPreviewNameSpan = document.getElementById('authorPreviewName');
+
+        authorProfileInput?.addEventListener('change', function (e) {
+            const file = e.target.files[0];
+            if (file) {
+                if (file.size > 20 * 1024 * 1024) { showError(`Author profile image too large (${(file.size / 1024 / 1024).toFixed(2)}MB). Max 20MB.`); this.value = ''; authorPreviewDiv.style.display = 'none'; return; }
+                const allowed = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+                if (!allowed.includes(file.type)) { showError(`Author picture: unsupported type. Use JPG, PNG, GIF, WebP.`); this.value = ''; authorPreviewDiv.style.display = 'none'; return; }
+                const reader = new FileReader();
+                reader.onload = function (ev) {
+                    authorPreviewImg.src = ev.target.result;
+                    const authorNameField = document.getElementById('authorName').value.trim() || 'Author';
+                    authorPreviewNameSpan.textContent = `📷 ${authorNameField.substring(0, 28)}`;
+                    authorPreviewDiv.style.display = 'flex';
+                };
+                reader.readAsDataURL(file);
+            } else {
+                authorPreviewDiv.style.display = 'none';
+                authorPreviewImg.src = '';
+            }
+        });
+
+        // sync author name preview in profile preview if user types name
+        document.getElementById('authorName')?.addEventListener('input', function() {
+            if (authorProfileInput.files && authorProfileInput.files.length > 0 && authorPreviewDiv.style.display === 'flex') {
+                const nameVal = this.value.trim() || 'Author';
+                authorPreviewNameSpan.textContent = `📷 ${nameVal.substring(0, 28)}`;
+            }
+        });
 
         async function loadArticles() {
             const loadingDiv = document.getElementById('articlesLoading');
             const container = document.getElementById('articlesList');
-            
             try {
                 const response = await fetch(`${API_URL}/articles`);
-                
-                if (!response.ok) {
-                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-                }
-                
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
                 const articles = await response.json();
-                
                 if (articles.length === 0) {
-                    loadingDiv.innerHTML = '📭 No articles yet. Create your first one above!';
+                    loadingDiv.innerHTML = '📭 No articles yet. Create your first article with author profile!';
                     loadingDiv.style.display = 'block';
                     container.innerHTML = '';
                     return;
                 }
-
                 loadingDiv.style.display = 'none';
-                container.innerHTML = articles.map(article => `
-                <li>
-                    <div>
-                        <strong>${escapeHtml(article.title)}</strong><br>
-                        <small>📂 ${escapeHtml(article.category)} | 📅 ${article.date}</small>
-                        ${article.author && article.author.name ? `<br><small>✍️ ${escapeHtml(article.author.name)}${article.author.role ? ' · ' + escapeHtml(article.author.role) : ''}</small>` : ''}
-                        ${article.featuredImage ? '<br><small>🖼️ Has image</small>' : ''}
-                    </div>
-                    <button class="delete-btn" onclick="deleteArticle('${article.slug}')">🗑️ Delete</button>
-                </li>
-            `).join('');
+                container.innerHTML = articles.map(article => {
+                    const authorData = article.author || {};
+                    const hasProfilePic = authorData.profileImageUrl ? true : false;
+                    const profilePicHtml = hasProfilePic ? `<span class="badge-image" style="background:#f1e6d2;">🖼️ profile pic</span>` : '';
+                    return `
+                    <li>
+                        <div style="flex:1">
+                            <strong>📄 ${escapeHtml(article.title)}</strong><br>
+                            <small>📁 ${escapeHtml(article.category)} · ${article.date}</small><br>
+                            <small style="display:flex; align-items:center; gap:6px; flex-wrap:wrap; margin-top:5px;">
+                                ✍️ <strong>${escapeHtml(authorData.name || 'APTA Foundry')}</strong> 
+                                ${authorData.role ? `· ${escapeHtml(authorData.role)}` : ''}
+                                ${profilePicHtml ? ` ${profilePicHtml}` : ''}
+                                ${article.featuredImage ? ' 🖼️ featured' : ''}
+                            </small>
+                        </div>
+                        <button class="delete-btn" onclick="deleteArticle('${article.slug}')">🗑️ Delete</button>
+                    </li>
+                `}).join('');
             } catch (error) {
-                console.error('Error loading articles:', error);
-                loadingDiv.innerHTML = '⚠️ Failed to load articles. Please refresh the page.';
+                console.error(error);
+                loadingDiv.innerHTML = '⚠️ Failed to load articles. Refresh or check server.';
                 loadingDiv.style.display = 'block';
-                showError('Unable to load articles: ' + error.message);
+                showError('Cannot fetch articles: ' + error.message);
             }
         }
 
+        // CREATE article with both article image AND author profile picture (saved exactly like article image)
         async function createArticle() {
             if (isSubmitting) {
-                showWarning('Please wait, article is being published...');
+                showWarning('Publishing in progress, please wait...');
                 return;
             }
 
             const publishBtn = document.getElementById('publishBtn');
-            const key = document.getElementById('adminKey').value;
+            const key = document.getElementById('adminKey').value.trim();
             const title = document.getElementById('title').value.trim();
             const category = document.getElementById('category').value;
             const excerpt = document.getElementById('excerpt').value.trim();
@@ -487,34 +548,13 @@
             const imageFile = document.getElementById('imageInput').files[0];
             const authorName = document.getElementById('authorName').value.trim();
             const authorRole = document.getElementById('authorRole').value.trim();
+            const authorProfileFile = document.getElementById('authorProfileInput').files[0];
 
-            // Validation
-            if (!key) {
-                showError('Please enter your admin key');
-                return;
-            }
-
-            if (!title) {
-                showError('Please enter an article title');
-                document.getElementById('title').focus();
-                return;
-            }
-
-            if (!excerpt) {
-                showError('Please enter an excerpt/summary');
-                document.getElementById('excerpt').focus();
-                return;
-            }
-
-            if (title.length > 200) {
-                showError('Title must be less than 200 characters');
-                return;
-            }
-
-            if (excerpt.length > 300) {
-                showError('Excerpt must be less than 300 characters');
-                return;
-            }
+            if (!key) { showError('Admin key is required'); return; }
+            if (!title) { showError('Please enter a title'); document.getElementById('title').focus(); return; }
+            if (!excerpt) { showError('Please enter excerpt'); document.getElementById('excerpt').focus(); return; }
+            if (title.length > 200) { showError('Title max 200 characters'); return; }
+            if (excerpt.length > 300) { showError('Excerpt max 300 characters'); return; }
 
             const formData = new FormData();
             formData.append('key', key);
@@ -524,107 +564,99 @@
             formData.append('content', content || '');
             formData.append('authorName', authorName || 'APTA Foundry');
             formData.append('authorRole', authorRole || '');
-            if (imageFile) {
-                formData.append('image', imageFile);
+            
+            // attach article featured image if exists
+            if (imageFile) formData.append('image', imageFile);
+            
+            // 🔥 NEW: attach author profile picture the SAME way article image is sent
+            // The backend (assumed to accept field "authorProfileImage" or similar) but we will send as "authorProfileImage"
+            // Based on your existing API, it handles file uploads via multer. we extend to accept authorProfileImage.
+            // We'll use field name "authorProfileImage" to store separately.
+            if (authorProfileFile) {
+                formData.append('authorProfileImage', authorProfileFile);
             }
 
             isSubmitting = true;
-            setButtonLoading(publishBtn, true, '📤 Publish Article');
+            setButtonLoading(publishBtn, true, 'Publish Article');
 
             try {
                 const response = await fetch(`${API_URL}/articles`, {
                     method: 'POST',
                     body: formData
                 });
-
                 const result = await response.json();
+                if (!response.ok) throw new Error(result.error || `Server error ${response.status}`);
 
-                if (!response.ok) {
-                    throw new Error(result.error || `HTTP ${response.status}: ${response.statusText}`);
-                }
-
-                showSuccess('🎉 Article published successfully!');
-
-                // Clear form
+                showSuccess('✅ Article published! Author profile picture saved alongside article image.');
+                
+                // reset form
                 document.getElementById('title').value = '';
                 document.getElementById('excerpt').value = '';
                 document.getElementById('content').value = '';
                 document.getElementById('authorName').value = '';
                 document.getElementById('authorRole').value = '';
                 document.getElementById('imageInput').value = '';
+                document.getElementById('authorProfileInput').value = '';
                 document.getElementById('imagePreview').style.display = 'none';
                 document.getElementById('imagePreview').innerHTML = '';
+                authorPreviewDiv.style.display = 'none';
+                authorPreviewImg.src = '';
                 updateCharCount('title', 'titleCount', 200);
                 updateCharCount('excerpt', 'excerptCount', 300);
-
-                // Reload list
                 await loadArticles();
-                
-                showInfo('✨ Your article is now live on the website!');
+                showInfo('✨ Author profile image & article image both stored on server!');
             } catch (error) {
-                console.error('Create error:', error);
-                showError(error.message || 'Failed to publish article. Please check your connection and try again.');
+                console.error('Publish error:', error);
+                showError(error.message || 'Failed to publish. Check connection or server logs.');
             } finally {
                 isSubmitting = false;
-                setButtonLoading(publishBtn, false, '📤 Publish Article');
+                setButtonLoading(publishBtn, false, '🚀 Publish Article with Author Profile');
             }
         }
 
         async function deleteArticle(slug) {
-            const key = document.getElementById('adminKey').value;
-            
-            if (!key) {
-                showError('Please enter your admin key');
-                return;
-            }
-
-            if (!confirm(`⚠️ Are you sure you want to delete "${slug}"?\n\nThis action cannot be undone!`)) {
-                return;
-            }
-
+            const key = document.getElementById('adminKey').value.trim();
+            if (!key) { showError('Admin key required to delete'); return; }
+            if (!confirm(`⚠️ Permanently delete "${slug}"? This also removes associated images (if any).`)) return;
             try {
                 const response = await fetch(`${API_URL}/articles/${slug}`, {
                     method: 'DELETE',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ key })
                 });
-
                 if (!response.ok) {
-                    const error = await response.json();
-                    throw new Error(error.error || 'Failed to delete');
+                    const errData = await response.json();
+                    throw new Error(errData.error || 'Delete failed');
                 }
-
-                showSuccess('🗑️ Article deleted successfully!');
+                showSuccess(`🗑️ Article "${slug}" deleted.`);
                 await loadArticles();
-            } catch (error) {
-                console.error('Delete error:', error);
-                showError(error.message || 'Failed to delete article');
+            } catch (err) {
+                showError(err.message);
             }
         }
 
-        function escapeHtml(text) {
-            if (!text) return '';
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
+        function escapeHtml(str) {
+            if (!str) return '';
+            return str.replace(/[&<>]/g, function(m) {
+                if (m === '&') return '&amp;';
+                if (m === '<') return '&lt;';
+                if (m === '>') return '&gt;';
+                return m;
+            }).replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g, function(c) {
+                return c;
+            });
         }
 
-        // Test connection on load
         async function testConnection() {
             try {
-                const response = await fetch(`${API_URL}/health`);
-                if (response.ok) {
-                    showInfo('✅ Connected to server successfully');
-                } else {
-                    showWarning('⚠️ Server connection unstable');
-                }
-            } catch (error) {
-                showError('❌ Cannot connect to server. Please check your internet connection.');
-                console.error('Connection test failed:', error);
+                const res = await fetch(`${API_URL}/health`);
+                if (res.ok) showInfo('✅ Connected to APTA server');
+                else showWarning('⚠️ Server unstable');
+            } catch (e) {
+                showError('🔌 Cannot connect to server. Please verify internet.');
             }
         }
 
-        // Load articles on page load
         loadArticles();
         testConnection();
     </script>
